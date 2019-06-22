@@ -1,78 +1,35 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Forms = System.Windows.Forms;
 
 namespace emoteTester
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _model;
+
         public MainWindow()
         {
-            
+            _model = new MainViewModel();
+
             InitializeComponent();
-            
 
+            // Set the DataContext to the _model so updates are caught
+            DataContext = _model;
+
+            // Event Handler being set to a function
+            // I like to use this instead of in the XAML because I don't need
+            // to handle the parameters in the called method when it doesn't use them
+            LoadFromFileButton.Click += (o, e) => LoadButton();
         }
 
-        //loading the image
-        private void BtnLoadFromFile_Click(object sender, RoutedEventArgs e)
+        private void LoadButton()
         {
+            var fileDialog = new Forms.OpenFileDialog();
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
+            if (fileDialog.ShowDialog() == Forms.DialogResult.OK)
             {
-                Uri fileUri = new Uri(openFileDialog.FileName);
-                imgDynamic.Source = new BitmapImage(fileUri);
-                imgDynamic2.Source = new BitmapImage(fileUri);
-                imgDynamic3.Source = new BitmapImage(fileUri);
-                imgDynamic4.Source = new BitmapImage(fileUri);
+                _model.FilePath = fileDialog.FileName;
             }
-
-
-        }
-
-        //updating Usernames
-        private void BtnUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            if (nameUpdate.Text == "")
-            {
-                MessageBox.Show("Name cannot be empty");
-            }
-            else 
-            {
-                Name1.Text = nameUpdate.Text;
-                Name2.Text = nameUpdate.Text;
-                Name3.Text = nameUpdate.Text;
-                Name4.Text = nameUpdate.Text;
-                
-            }
-            nameUpdate.Text = "";
-
-        }
-
-        //updating Chat Text
-        private void BtnTextUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            Text1.Text = textUpdate.Text;
-            Text2.Text = textUpdate.Text;
-            Text3.Text = textUpdate.Text;
-            Text4.Text = textUpdate.Text;
-            textUpdate.Text = "";
         }
     }
 }
